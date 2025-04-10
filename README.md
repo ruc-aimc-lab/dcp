@@ -16,13 +16,13 @@ The model reported in our paper is `R2AUNet_DCP` with `512*512` input.
 
 | model | Resolution | Download | Mean AP | Mean AUC |
 | :--: | :--: | :--: | --: | --: |
-| UNet_DCP    | 512*512   | HF |
+| UNet_DCP    | 512*512   | HF | 0.6968 | 0.9738 |
 | UNet_DCP    | 1024*1024 | HF |
 | R2AUNet_DCP | 512*512   | [HF](https://huggingface.co/AIMClab/R2AUNet_DCP_512) | 0.7037 | 0.9739 |
 | R2AUNet_DCP | 1024*1024 | HF |
-| JTFN_DCP    | 512*512   | HF |
-| JTFN_DCP    | 1024*1024 | HF |
-
+| JTFN_DCP    | 512*512   | HF | 0.7039 | 0.9745 |
+| JTFN_DCP    | 1024*1024 | HF | 0.7869 | 0.9805 |
+ 
 
 ### 2. Environment
 Install packages by `pip install -r requirements.txt`. This step is suggested to be done in your docker container or virtual environment or things like that. 
