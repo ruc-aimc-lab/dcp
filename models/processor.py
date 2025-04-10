@@ -31,18 +31,21 @@ class BasicProcessor(object):
 
     def set_device(self, device):
         # print(device)
-        if len(device) > 1:
-            self.model= nn.DataParallel(self.model, device_ids=device)
-            _device = 'cuda'
+        if isinstance(device, list):
+            if len(device) > 1:
+                self.model= nn.DataParallel(self.model, device_ids=device)
+                _device = 'cuda'
+            else:
+                _device = 'cuda:{}'.format(device[0])
+            self.model.to(_device)
         else:
-            _device = 'cuda:{}'.format(device[0])
-        self.model.to(_device)
+            self.model.to(device)
         
     def save_model(self, path):
         torch.save(self.model.state_dict(), path)
 
     def load_model(self, path):
-        state_dict = torch.load(path)
+        state_dict = torch.load(path, map_location='cpu')
 
         remove_module = True
         for k, v in state_dict.items():
@@ -97,7 +100,7 @@ class Processor(BasicProcessor):
         return self.model(x)
     
     
-class DualPromptProcessor(BasicProcessor):
+class DCPProcessor(BasicProcessor):
     def __init__(self, model, training_params, training=True) -> None:
         self.model = model
         if training:
@@ -132,10 +135,14 @@ class DualPromptProcessor(BasicProcessor):
 
     def predict(self, x, device, **kwargs):
         dataset_idx = kwargs['dataset_idx']
-        if len(device) > 1:
-            _device = 'cuda'
+        print(dataset_idx)
+        if isinstance(device, list):
+            if len(device) > 1:
+                _device = 'cuda'
+            else:
+                _device = 'cuda:{}'.format(device[0])
         else:
-            _device = 'cuda:{}'.format(device[0])
+            _device = device
         
         x = x.type(torch.FloatTensor).to(_device)
     
@@ -208,7 +215,7 @@ class JTFNProcessor(BasicProcessor):
         return outputs['output']
     
 
-class JTFNDualPromptProcessor(BasicProcessor):
+class JTFNDCPProcessor(BasicProcessor):
     def __init__(self, model, training_params, training=True) -> None:
         # model_params = training_params['model_params']
         # n_class = model_params['n_class']

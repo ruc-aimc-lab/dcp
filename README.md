@@ -7,12 +7,32 @@ Previous research on retinal vessel segmentation is targeted at a specific image
 
 <img src="images/paradigms.png" width="60%"> 
 
-## Preparation
+## Quick start
 
 ### 1. Checkpoints
+We provide pretrained weights of different input resolutions and segmentation architectures ([UNet](https://link.springer.com/chapter/10.1007/978-3-319-24574-4_28), [R2AUNet](https://onlinelibrary.wiley.com/doi/10.1155/2021/6625688) and [JTFN](https://ieeexplore.ieee.org/document/9710318)).
+The model reported in our paper is `R2AUNet_DCP` with `512*512` input.
 
 
-### 2. Datasets
+| model | Resolution | Download | Mean AP | Mean AUC |
+| :--: | :--: | :--: | --: | --: |
+| UNet_DCP    | 512*512   | HF |
+| UNet_DCP    | 1024*1024 | HF |
+| R2AUNet_DCP | 512*512   | HF | 0.7037 | 0.9739 |
+| R2AUNet_DCP | 1024*1024 | HF |
+| JTFN_DCP    | 512*512   | HF |
+| JTFN_DCP    | 1024*1024 | HF |
+
+
+### 2. Environment
+Install packages by `pip install -r requirements.txt`. This step is suggested to be done in your docker container or virtual environment or things like that. 
+
+### 3. Inference
+
+
+## Model training and evaluation (TODO)
+
+### 1. Datasets
 - [ROSSA](https://github.com/nhjydywd/OCTA-FRNet/tree/main/dataset/ROSSA) for OCTA
 - [FIVES](https://figshare.com/articles/figure/FIVES_A_Fundus_Image_Dataset_for_AI-based_Vessel_Segmentation/19688169) for CFP
 - [IOSTAR](https://www.retinacheck.org/download-iostar-retinal-vessel-segmentation-dataset) for SLO
@@ -21,18 +41,15 @@ Previous research on retinal vessel segmentation is targeted at a specific image
 
 If you only want to test the performances on a specific modality, you can download the dataset for that modality only.
 
-### 3. Preprocessing for CFP images.
+### 2. Preprocessing for CFP images.
 We perform preprocessing `preprocess.py` on CFP images to cut out the retina areas and ensure the images are square
 
-### 4. Environment
-Install packages by `pip install -r requirements.txt`. This step is suggested to be done in your docker container or virtual environment or things like that. 
 
-
-## Prediction and evaluation
+### 3. Prediction and evaluation
 By using python `checkpoint_eval.py`, you can evaluate the downloaded checkpoint. If everything goes well, you may get the following result:
 
 
-## Training
+### 4. Training
 Try `sh main.sh` which combines training, predicting and evaluating together.
 
 ## Citation
