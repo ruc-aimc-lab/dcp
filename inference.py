@@ -65,7 +65,8 @@ class Inference(object):
 if __name__ == '__main__':
     model_path = 'checkpoints/R2AUNet_DCP_512'
     image_path = 'images/CFP.jpg'
-    modality = 'CFP'  
+    modality = 'CFP'
+     
     output_path = 'output_image_CFP.png'
 
     inference = Inference(model_path)

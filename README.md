@@ -18,7 +18,7 @@ The model reported in our paper is `R2AUNet_DCP` with `512*512` input.
 | :--: | :--: | :--: | --: | --: |
 | UNet_DCP    | 512*512   | HF |
 | UNet_DCP    | 1024*1024 | HF |
-| R2AUNet_DCP | 512*512   | HF | 0.7037 | 0.9739 |
+| R2AUNet_DCP | 512*512   | [HF](https://huggingface.co/AIMClab/R2AUNet_DCP_512) | 0.7037 | 0.9739 |
 | R2AUNet_DCP | 1024*1024 | HF |
 | JTFN_DCP    | 512*512   | HF |
 | JTFN_DCP    | 1024*1024 | HF |
@@ -28,7 +28,7 @@ The model reported in our paper is `R2AUNet_DCP` with `512*512` input.
 Install packages by `pip install -r requirements.txt`. This step is suggested to be done in your docker container or virtual environment or things like that. 
 
 ### 3. Inference
-
+Run `python inference.py`
 
 ## Model training and evaluation (TODO)
 
