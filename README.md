@@ -10,9 +10,6 @@ Previous research on retinal vessel segmentation is targeted at a specific image
 ## Quick start
 
 ### 1. Checkpoints
-We provide pretrained weights of different input resolutions and segmentation architectures ([UNet](https://link.springer.com/chapter/10.1007/978-3-319-24574-4_28), [R2AUNet](https://onlinelibrary.wiley.com/doi/10.1155/2021/6625688) and [JTFN](https://ieeexplore.ieee.org/document/9710318)).
-The model reported in our paper is `R2AUNet_DCP` with `512*512` input.
-
 
 | model | Resolution | Download | Mean AP | Mean AUC |
 | :--: | :--: | :--: | --: | --: |
