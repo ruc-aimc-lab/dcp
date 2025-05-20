@@ -19,7 +19,6 @@ def window_partition(x: torch.Tensor, window_size: int):
         x = F.pad(x, (0, pad_w, 0, pad_h))
     Hp, Wp = H + pad_h, W + pad_w
     
-    #          0  1        2                3                4               5
     x = x.view(B, C, Hp // window_size, window_size, Wp // window_size, window_size)
     windows = x.permute(0, 2, 4, 1, 3, 5).contiguous().view(-1, C, window_size, window_size)
     return windows, (Hp, Wp), (Hp // window_size, Wp // window_size)
@@ -100,7 +99,7 @@ class MultiHeadSelfAttention(nn.Module):
         B, N, C = x.shape
         out = self.norm(x)
         qkv = self.qkv(out).reshape(B, N, 3, self.num_heads, C // self.num_heads).permute(2, 0, 3, 1, 4)
-        q, k, v = qkv[0], qkv[1], qkv[2]   # make torchscript happy (cannot use tensor as tuple)
+        q, k, v = qkv[0], qkv[1], qkv[2]  
 
         attn = (q @ k.transpose(-2, -1)) * self.scale
         attn = attn.softmax(dim=-1)
@@ -125,7 +124,7 @@ class MultiHeadAttention2D_POS(nn.Module):
 
         self.embed_dim_qk = embed_dim // embed_dim_ratio
         
-        if self.embed_dim_qk % num_heads != 0:  # 保证可以整除num_heads
+        if self.embed_dim_qk % num_heads != 0:  
             self.embed_dim_qk = (self.embed_dim_qk // num_heads + 1) * num_heads
 
         self.embed_dim_v = embed_dim
@@ -133,7 +132,6 @@ class MultiHeadAttention2D_POS(nn.Module):
             self.embed_dim_v = (self.embed_dim_v // num_heads + 1) * num_heads
         
         head_dim = self.embed_dim_qk // num_heads
-        # self.norm = nn.LayerNorm(embed_dim)
 
         self.scale = head_dim ** -0.5
 
@@ -162,7 +160,6 @@ class MultiHeadAttention2D_POS(nn.Module):
         proj_q = self.conv_q(q).reshape(B, self.num_heads, self.embed_dim_qk // self.num_heads, H_q * W_q).permute(0, 1, 3, 2).contiguous()
         proj_k = self.conv_k(k).reshape(B, self.num_heads, self.embed_dim_qk // self.num_heads, H_kv * W_kv).permute(0, 1, 3, 2).contiguous()
         proj_v = self.conv_v(v).reshape(B, self.num_heads, self.embed_dim_v // self.num_heads, H_kv * W_kv).permute(0, 1, 3, 2).contiguous()
-        # B, self.num_heads, H * W, self.embed_dim // self.num_heads
 
         attn = (proj_q @ proj_k.transpose(-2, -1)).contiguous() * self.scale  # B, self.num_heads, H_q * W_q, H_kv * W_kv
         attn = attn.softmax(dim=-1)
@@ -172,8 +169,6 @@ class MultiHeadAttention2D_POS(nn.Module):
         out = out.transpose(2, 3).contiguous().reshape(B, self.embed_dim_v, H_q, W_q)
 
         if self.slide > 0:
-            #print(out.size(), self.slide // self.stride)
-            #print(q.size(), self.slide)
             out = out[:, :,  self.slide // self.stride:]
             q = q[:, :,  self.slide:]
         
@@ -189,7 +184,6 @@ class MultiHeadAttention2D_CHA(nn.Module):
         super().__init__()
         self.num_heads = num_heads
         self.stride = stride
-        # self.scale = head_dim ** -0.5
         self.slide = slide
         self.dim_q_out = dim_q - slide
 
@@ -216,7 +210,7 @@ class MultiHeadAttention2D_CHA(nn.Module):
         attn = self.drop(attn)
 
         out = (attn @ proj_v)  #  batch_size, num_heads, dim_q, (H * W)
-        if self.slide > 0:  # channel prompt在后头
+        if self.slide > 0: 
             out = out[:, :, :-self.slide]
         out = out.reshape(B, self.num_heads * self.dim_q_out, H_q // self.stride, W_q // self.stride)
         
@@ -247,7 +241,6 @@ class MultiHeadAttention2D_Dual2_2(nn.Module):
 
 
     def forward(self, qkv_pos, qkv_cha, heat=False):
-        # print(q.size())
         if qkv_cha is None:
             qkv_cha = qkv_pos
         out_pos = self.pos_att(qkv_pos, qkv_pos, qkv_pos, heat)
@@ -627,7 +620,6 @@ class Prompt_U_Net_P_DCP(nn.Module):
     def get_cha_prompts(self, dataset_idx, batch_size):
         if len(dataset_idx) != batch_size:
             raise Exception(dataset_idx, self.dataset_idx, batch_size)
-        # print(dataset_idx, '***')
         promots1 = torch.concatenate([self.cha_promot1[str(i)] for i in dataset_idx], dim=0)
         promots2 = torch.concatenate([self.cha_promot2[str(i)] for i in dataset_idx], dim=0)
         promots3 = torch.concatenate([self.cha_promot3[str(i)] for i in dataset_idx], dim=0)
@@ -638,7 +630,6 @@ class Prompt_U_Net_P_DCP(nn.Module):
     def get_pos_prompts(self, dataset_idx, batch_size):
         if len(dataset_idx) != batch_size:
             raise Exception(dataset_idx, self.dataset_idx)
-        # print(dataset_idx, '***')
         promots1 = torch.concatenate([self.pos_promot1[str(i)] for i in dataset_idx], dim=0)
         promots2 = torch.concatenate([self.pos_promot2[str(i)] for i in dataset_idx], dim=0)
         promots3 = torch.concatenate([self.pos_promot3[str(i)] for i in dataset_idx], dim=0)
@@ -680,11 +671,9 @@ class Prompt_U_Net_P_DCP(nn.Module):
         pos_promots4 = prompt_partition(pos_promots4, h_win4, w_win4)
         pos_promots5 = prompt_partition(pos_promots5, h_win5, w_win5)
 
-        #print(x1.size(), x2.size(), x3.size(), x4.size(), x5.size())
         cha_x1, cha_x2, cha_x3, cha_x4, cha_x5 = torch.cat([x1, cha_promots1], dim=1), torch.cat([x2, cha_promots2], dim=1), torch.cat([x3, cha_promots3], dim=1), torch.cat([x4, cha_promots4], dim=1), torch.cat([x5, cha_promots5], dim=1)
         pos_x1, pos_x2, pos_x3, pos_x4, pos_x5 = torch.cat([pos_promots1, x1], dim=2), torch.cat([pos_promots2, x2], dim=2), torch.cat([pos_promots3, x3], dim=2), torch.cat([pos_promots4, x4], dim=2), torch.cat([pos_promots5, x5], dim=2)
         
-        #print(x1.size(), x2.size(), x3.size(), x4.size(), x5.size())
         x1, x2, x3, x4, x5 = self.att1(pos_x1, cha_x1), self.att2(pos_x2, cha_x2), self.att3(pos_x3, cha_x3), self.att4(pos_x4, cha_x4), self.att5(pos_x5, cha_x5)
         
         x1 = window_unpartition(x1, self.local_window_sizes[0], (Hp1, Wp1), (h1, w1))

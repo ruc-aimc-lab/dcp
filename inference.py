@@ -24,6 +24,7 @@ class Inference(object):
         self.modality_mapping = params['modality_mapping']
         self.model = self.load_model()
         
+        
     def inference(self, image, modality):
         assert modality in self.modality_mapping, "Modality '{}' not supported".format(modality)
         
@@ -54,6 +55,8 @@ class Inference(object):
                             training=False, 
                             dataset_idx=list(self.modality_mapping.values()),
                             pretrained=False)
+        #print(model.model.pos_promot3['0'])
+
         model.set_device(device)
         # model.requires_grad_false()
         model.load_model(os.path.join(self.model_path, 'model.pkl'))
@@ -63,15 +66,21 @@ class Inference(object):
 
 
 if __name__ == '__main__':
-    model_path = 'checkpoints/R2AUNet_DCP_512'
-    image_path = 'images/CFP.jpg'
-    modality = 'CFP'
+    model_path = 'checkpoints/UNet_DCP_512'
+    image_paths = [
+        'images/FFA.bmp',
+        'images/CFP.jpg',
+        'images/SLO.jpg',
+        'images/UWF.jpg',
+        'images/OCTA.png'
+        ]
+    modalities = ['FFA', 'CFP', 'SLO', 'UWF', 'OCTA']
      
-    output_path = 'output_image_CFP.png'
+    output_root = 'output_images'
+    os.makedirs(output_root, exist_ok=True)
 
     inference = Inference(model_path)
-    output = inference.inference(image_path, modality)
     
-    # Save the output
-    cv2.imwrite(output_path, output)
-    print(f"Output saved to {output_path}")
+    for image_path, modality in zip(image_paths, modalities):
+        output = inference.inference(image_path, modality)    
+        cv2.imwrite(os.path.join(output_root, '{}.png'.format(modality)), output)

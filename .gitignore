@@ -2,3 +2,4 @@
 data*
 checkpoints
 *.pyc
+output_images

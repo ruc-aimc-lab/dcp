@@ -135,7 +135,7 @@ class DCPProcessor(BasicProcessor):
 
     def predict(self, x, device, **kwargs):
         dataset_idx = kwargs['dataset_idx']
-        print(dataset_idx)
+        #print(dataset_idx)
         if isinstance(device, list):
             if len(device) > 1:
                 _device = 'cuda'

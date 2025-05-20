@@ -13,7 +13,7 @@ Previous research on retinal vessel segmentation is targeted at a specific image
 
 | model | Resolution | Download | Mean AP | Mean AUC |
 | :--: | :--: | :--: | --: | --: |
-| UNet_DCP    | 512*512   | HF | 0.6968 | 0.9738 |
+| UNet_DCP    | 512*512   | HF | 0.6920 | 0.9736 |
 | UNet_DCP    | 1024*1024 | HF |
 
  
