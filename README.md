@@ -16,7 +16,6 @@ Previous research on retinal vessel segmentation is targeted at a specific image
 | UNet_DCP    | 512*512   | HF | 0.6920 | 0.9736 |
 | UNet_DCP    | 1024*1024 | HF |
 
- 
 
 ### 2. Environment
 Install packages by `pip install -r requirements.txt`. This step is suggested to be done in your docker container or virtual environment or things like that. 
@@ -26,25 +25,6 @@ Run `python inference.py`
 
 ## Model training and evaluation (TODO)
 
-### 1. Datasets
-- [ROSSA](https://github.com/nhjydywd/OCTA-FRNet/tree/main/dataset/ROSSA) for OCTA
-- [FIVES](https://figshare.com/articles/figure/FIVES_A_Fundus_Image_Dataset_for_AI-based_Vessel_Segmentation/19688169) for CFP
-- [IOSTAR](https://www.retinacheck.org/download-iostar-retinal-vessel-segmentation-dataset) for SLO
-- [PRIME-FP20](https://ieee-dataport.org/open-access/prime-fp20-ultra-widefield-fundus-photography-vessel-segmentation-dataset) for UWF
-- [VAMPIRE](https://vampire.computing.dundee.ac.uk/vesselseg.html) for FFA
-
-If you only want to test the performances on a specific modality, you can download the dataset for that modality only.
-
-### 2. Preprocessing for CFP images.
-We perform preprocessing `preprocess.py` on CFP images to cut out the retina areas and ensure the images are square
-
-
-### 3. Prediction and evaluation
-By using python `checkpoint_eval.py`, you can evaluate the downloaded checkpoint. If everything goes well, you may get the following result:
-
-
-### 4. Training
-Try `sh main.sh` which combines training, predicting and evaluating together.
 
 ## Citation
 If you find this our work useful, please consider citing:
